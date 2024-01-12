@@ -85,6 +85,19 @@ export class VendingMachineService {
     productSlot: number,
     coinsInserted: CoinInventory,
   ): BuyProductResponseDto {
+    // check if the coins inserted are accepted
+    const invalidCoins = Object.keys(coinsInserted).filter(
+      (coin) => !this.acceptedCoins.includes(parseFloat(coin)),
+    );
+    if (invalidCoins.length > 0) {
+      // Return the coins inserted if the coins are not accepted
+      return {
+        success: false,
+        change: coinsInserted,
+        reason: VendingMachineErrors.CoinsNotAccepted,
+      };
+    }
+
     const product = this.productsService.findOne(productSlot);
 
     // Check if the product is available

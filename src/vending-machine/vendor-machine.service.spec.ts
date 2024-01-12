@@ -127,5 +127,18 @@ describe('VendingMachineService', () => {
         VendingMachineErrors.InsufficientCoinsToReturnChange,
       );
     });
+
+    it('should not buy a product if the coins are not accepted', () => {
+      const productId = 1;
+      const insertedMoney = {
+        0.1: 30,
+      };
+      const result = service.buyProduct(productId, insertedMoney);
+
+      expect(result.success).toBe(false);
+      expect(result.product).toBeUndefined();
+      expect(result.change).toEqual(insertedMoney);
+      expect(result.reason).toBe(VendingMachineErrors.CoinsNotAccepted);
+    });
   });
 });
