@@ -36,7 +36,7 @@ describe('ProductsService', () => {
       quantity: 10,
     };
     for (let i = 0; i < MAX_SLOTS; i++) {
-      service.create({ name: crypto.randomUUID(), price: 30, quantity: 10 });
+      service.create({ name: `Product ${i}`, price: 30, quantity: 10 });
     }
     expect(() => service.create(createProductDto)).toThrow();
   });
