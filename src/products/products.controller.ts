@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { ProductsService } from '@/products/products.service';
 import { CreateProductDto } from '@/products/dto/create-product.dto';
@@ -49,7 +50,12 @@ export class ProductsController {
     summary: 'Get the product in a given slot in the vending machine.',
   })
   findOne(@Param('productSlot') productSlot: string) {
-    return this.productsService.findOne(+productSlot);
+    const product = this.productsService.findOne(+productSlot);
+    if (!product) {
+      throw new NotFoundException(`Product in slot ${productSlot} not found`);
+    }
+
+    return product;
   }
 
   @Patch(':productSlot')
