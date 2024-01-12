@@ -16,7 +16,7 @@ export class VendingMachineController {
 
   @Get('coin-inventory')
   @ApiOkResponse({ type: CoinInventoryDto })
-  @ApiOperation({ summary: 'Get coin inventory' })
+  @ApiOperation({ summary: 'Get coin inventory. Requires maintenance role.' })
   @Roles(Role.MAINTENANCE)
   getCoinInventory(): CoinInventoryDto[] {
     return this.vendingMachineService.getCoinInventory();
@@ -24,7 +24,9 @@ export class VendingMachineController {
 
   @Post('configure')
   @ApiOkResponse({ type: String, isArray: true })
-  @ApiOperation({ summary: 'Configure accepted coins' })
+  @ApiOperation({
+    summary: 'Configure accepted coins. Requires maintenance role.',
+  })
   @Roles(Role.MAINTENANCE)
   configure(@Body() configureMachineDto: ConfigureMachineDto) {
     return this.vendingMachineService.configure(configureMachineDto.coins);
@@ -32,7 +34,9 @@ export class VendingMachineController {
 
   @Patch('coin-inventory')
   @ApiOkResponse({ type: CoinInventoryDto, isArray: true })
-  @ApiOperation({ summary: 'Update coin inventory' })
+  @ApiOperation({
+    summary: 'Update coin inventory. Requires maintenance role.',
+  })
   @Roles(Role.MAINTENANCE)
   updateCoinInventory(@Body() coinInventoryDto: CoinInventoryDto[]) {
     return this.vendingMachineService.updateCoinInventory(coinInventoryDto);
@@ -41,10 +45,12 @@ export class VendingMachineController {
   @Post('buy')
   @ApiOkResponse({ type: BuyProductResponseDto })
   @ApiOperation({ summary: 'Buy a product' })
-  create(@Body() buyProductDto: BuyProductDto) {
+  buyProduct(@Body() buyProductDto: BuyProductDto) {
     const coins: CoinInventory = buyProductDto.coins.reduce(
       (coinInventory, coin) => {
-        coinInventory[coin.coinValue] = coin.quantity;
+        if (coin.quantity > 0) {
+          coinInventory[coin.coinValue] = coin.quantity;
+        }
         return coinInventory;
       },
       {},
