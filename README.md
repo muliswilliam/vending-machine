@@ -1,3 +1,7 @@
+## Pre-requisites
+- Node.js v21.4.0
+- npm 10.2.4
+
 ## Installation
 
 ```bash
