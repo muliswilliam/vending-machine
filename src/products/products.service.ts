@@ -2,6 +2,7 @@ import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from '@/products/dto/create-product.dto';
 import { UpdateProductDto } from '@/products/dto/update-product.dto';
 import { Product } from '@/products/entities/product.entity';
+import { MAX_SLOTS } from '../shared/constants';
 
 @Injectable()
 export class ProductsService {
@@ -14,6 +15,11 @@ export class ProductsService {
    * @returns {Product} Returns the created product
    */
   public create(createProductDto: CreateProductDto) {
+    // check if there are available slots
+    if (this.products.size === MAX_SLOTS) {
+      throw new HttpException('No available slots', 400);
+    }
+
     if (!this.isProductNameUnique(createProductDto.name)) {
       throw new HttpException(
         `Product name: ${createProductDto.name} is not unique`,

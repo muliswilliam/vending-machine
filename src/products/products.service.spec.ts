@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from '@/products/dto/create-product.dto';
 import { UpdateProductDto } from '@/products/dto/update-product.dto';
+import { MAX_SLOTS } from '../shared/constants';
 
 describe('ProductsService', () => {
   let service: ProductsService;
@@ -26,6 +27,18 @@ describe('ProductsService', () => {
     };
     const product = service.create(createProductDto);
     expect(product).toEqual(createProductDto);
+  });
+
+  it('should not create a product if there are no available slots', () => {
+    const createProductDto: CreateProductDto = {
+      name: '',
+      price: 30,
+      quantity: 10,
+    };
+    for (let i = 0; i < MAX_SLOTS; i++) {
+      service.create({ name: crypto.randomUUID(), price: 30, quantity: 10 });
+    }
+    expect(() => service.create(createProductDto)).toThrow();
   });
 
   it('should find all products', () => {
