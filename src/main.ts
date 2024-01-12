@@ -20,7 +20,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addGlobalParameters({
       name: ROLE_HEADER,
-      description: 'User role: MAINTENANCE or USER(optional)',
+      description: 'User role: MAINTENANCE or USER',
       in: 'header',
     })
     .build();
